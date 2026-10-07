@@ -361,3 +361,47 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+###############################################################################
+# Unreal Engine —— 引擎/编译生成物，绝对不要提交
+# 克隆仓库后重新编译 + 右键 demo.uproject 生成工程文件即可复原
+###############################################################################
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+# UBT 生成的 VS 工程文件
+*.sln
+*.slnx
+*.VC.db
+*.opensdf
+*.sdf
+*.xcodeproj
+*.xcworkspace
+# Live Coding 热重载补丁
+patch_*.dll
+patch_*.pdb
+patch_*.exe
+# 每个开发者自己的临时资源
+Content/Developers/
+
+###############################################################################
+# 第三方资源包（商城/示例包，合计 9.55GB，占 Content 的 98%）
+# 它们不是本项目的代码，克隆后可按需重新导入。
+# 若要连它们一起提交：删掉下面这一段即可 —— 但仓库会变成约 10GB，
+# GitHub 单次 push 上限 2GB，实际上推不上去，建议保持忽略。
+###############################################################################
+Content/Medieval_Weapons/
+Content/NiagaraExamples/
+Content/Projectiles_Spells_VFX_Vol_2/
+Content/MagicAbilitiesVol2/
+Content/NiagaraMagicalSlashes/
+Content/__AoeVFX/
+Content/CombatMasterAnimBundle/
+Content/StylizedSlashesV2/
+Content/Achievement_SFX/
+Content/Anime_VFX/
+Content/Weapons/Sword_Animations/
+Content/Weapons/Dual_Sword/
+Content/Weapons/Mage/
