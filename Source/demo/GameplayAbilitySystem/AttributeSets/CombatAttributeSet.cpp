@@ -21,3 +21,28 @@ void UCombatAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME_CONDITION_NOTIFY(UCombatAttributeSet, Strength, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UCombatAttributeSet, MaxStrength, COND_None, REPNOTIFY_Always);
 }
+void UCombatAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+{
+	Super::PreAttributeChange(Attribute, NewValue);
+	if (Attribute == GetArmorAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxArmor());
+	}
+	else if (Attribute == GetStrengthAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxStrength());
+	}
+}
+
+void UCombatAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+{
+	Super::PostGameplayEffectExecute(Data);
+	if(Data.EvaluatedData.Attribute == GetArmorAttribute())
+	{
+		SetArmor(GetArmor());
+	}
+	else if(Data.EvaluatedData.Attribute == GetStrengthAttribute())
+	{
+		SetStrength(GetStrength());
+	}
+}

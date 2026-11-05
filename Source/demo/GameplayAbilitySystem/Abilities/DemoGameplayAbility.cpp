@@ -11,6 +11,14 @@ UDemoGameplayAbility::UDemoGameplayAbility()
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Dead")));
 }
 
+void UDemoGameplayAbility::SetAbilityLevel(int32 NewLevel)
+{
+	if (FGameplayAbilitySpec* AbilitySpec = GetCurrentAbilitySpec())
+	{
+		AbilitySpec->Level = NewLevel;
+	}
+}
+
 bool UDemoGameplayAbility::HasPC()const
 {
 	const APawn* PawnObject = Cast<APawn>(GetAvatarActorFromActorInfo());

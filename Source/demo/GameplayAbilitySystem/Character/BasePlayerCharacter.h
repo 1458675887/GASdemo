@@ -95,7 +95,7 @@ public:
 	UFUNCTION(BlueprintCallable,Category="AbilitySystem")
 	/*TArray<TSubclassOf<UGameplayAbility>>每个元素都是UGameplayAbility的子类的数组。意思就是多个技能的数组
 	返回一个句柄类型的数组是仿照give ability函数的返回句柄*/
-	TArray<FGameplayAbilitySpecHandle> GrantAbilities(TArray<TSubclassOf<UGameplayAbility>>AbilitiesToGrant);
+	TArray<FGameplayAbilitySpecHandle> GrantAbilities(TArray<TSubclassOf<UGameplayAbility>>AbilitiesToGrant,int32 Level=1);
 
 	//移除一组技能
 	UFUNCTION(BlueprintCallable, Category = "AbilitySystem")

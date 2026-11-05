@@ -9,6 +9,7 @@
 #include "demo/GameplayAbilitySystem/DemoAbilitySystemComponent.h"
 #include "../AttributeSets/BasicAttributeSet.h"
 #include "../AttributeSets/CombatAttributeSet.h"
+#include "../Abilities/DemoGameplayAbility.h"
 
 // Sets default values
 ABasePlayerCharacter::ABasePlayerCharacter()
@@ -100,7 +101,7 @@ UAbilitySystemComponent* ABasePlayerCharacter::GetAbilitySystemComponent()const
 }
 
 TArray<FGameplayAbilitySpecHandle> ABasePlayerCharacter::GrantAbilities(
-	TArray<TSubclassOf<UGameplayAbility>>AbilitiesToGrant)
+	TArray<TSubclassOf<UGameplayAbility>>AbilitiesToGrant,const int32 Level)
 {
 	//如果没有ASC或者没有权限（只有服务器能授予技能）
 	if (!AbilitySystemComponent||!HasAuthority())
@@ -115,15 +116,32 @@ TArray<FGameplayAbilitySpecHandle> ABasePlayerCharacter::GrantAbilities(
 	//遍历技能数组，逐个授予
 	for (TSubclassOf<UGameplayAbility> Ability : AbilitiesToGrant)
 	{
+		int32 InputID = -1;
+		bool ShouldActivate = false;
+		//如果获取到了技能类的默认对象（CDO），就把它的输入绑定ID赋值给InputID
+		if (const UDemoGameplayAbility* DemoAbilityCDO = GetDefault<UDemoGameplayAbility>(Ability))
+		{
+			//把枚举类型的InputID转换为int32类型
+			InputID = static_cast<int32>(DemoAbilityCDO->AbilityInputID);
+
+			//是否自动激活技能
+			ShouldActivate = DemoAbilityCDO->AutoActivateWhenGranted;
+		}
+		
 		//SpecHandle就是要存入AbilityHandles里的
 		
 		/*获取ASC，调用giveability函数，这个函数需要传入一个规格spec作为参数
 		规格需要传入参数，参数分别为(授予的技能，技能等级，输入绑定ID，授予对象)
 		ID-1就是INDEX_NONE不绑定，授予对象就是当前这个角色基类*/
-		FGameplayAbilitySpecHandle SpecHandle=AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability,1,-1,this));
+		FGameplayAbilitySpecHandle SpecHandle=AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability,Level, InputID,this));
 
 		//SpecHandle存入AbilityHandles
 		AbilityHandles.Add(SpecHandle);
+
+		if (ShouldActivate)
+		{
+			AbilitySystemComponent->TryActivateAbility(SpecHandle);
+		}
 	}
 	SendAbilitiesChangedEvent();
 	//返回技能句柄数组
